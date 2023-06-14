@@ -1,5 +1,6 @@
 package com.server.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,27 +10,34 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+@Slf4j
 @Component
 public class MailUtils {
 
+    private static String sender;
+    private static String smtpPassword;
+
     @Value("${mail.senderMail}")
-    private String sender;
+    private void setSender(String sender){
+        MailUtils.sender=sender;
+    }
 
     @Value("${mail.smtpPassword}")
-    private String smtpPassword;
-
+    private void setSmtpPassword(String smtpPassword){
+        MailUtils.smtpPassword=smtpPassword;
+    }
 
     /**
      * 发送邮件信息
      * @param mail 收件人邮箱
      * @param title 邮件标题
      * @param text 邮件正文
-     * @return
+     * @return 是否发送成功
      */
     public static boolean sendMail(String mail,String title,String text){
-        MailUtils mailUtils=new MailUtils();
-        String sender=mailUtils.sender;
-        String smtpPassword=mailUtils.smtpPassword;
+        log.info("接收邮箱地址：{}",mail);
+        String sender=MailUtils.sender;
+        String smtpPassword=MailUtils.smtpPassword;
         final Properties properties=new Properties();
         properties.put("mail.smtp.auth","true");
         String[] strings=sender.split("@");
@@ -76,5 +84,6 @@ public class MailUtils {
 //            throw new RuntimeException(e);
         }
     }
+
 
 }
