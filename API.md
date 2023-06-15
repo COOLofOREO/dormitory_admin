@@ -31,7 +31,7 @@ Base URLs:
 
 ## POST 用户登录
 
-POST /user/login
+POST /userAll/login
 
 可用邮箱输入密码登录，也可以邮箱发送验证码登录
 
@@ -75,7 +75,7 @@ POST /user/login
 
 ## POST 用户注册
 
-POST /user/register
+POST /userAll/register
 
 > Body 请求参数
 
@@ -124,7 +124,7 @@ POST /user/register
 
 ## POST 用户信息修改
 
-POST /user/upd
+POST /userAll/upd
 
 根据用户Id修改基本用户信息
 
@@ -173,7 +173,7 @@ POST /user/upd
 
 ## DELETE 用户注销
 
-DELETE /user/del
+DELETE /userAll/del
 
 用户注销需输入其邮箱与密码
 

@@ -5,8 +5,37 @@
 <mapper namespace="com.server.mapper.UserMapper">
 
     <insert id="addUser">
-        insert into user(user_id,email)
-        values (#{userId},#{email});
+        insert into user
+        values (#{userId},#{role},#{email},#{status},#{image},#{name},#{sex},#{age},#{phone});
     </insert>
+
+    <update id="updateLoginIpByEmail">
+        update user_info
+        set login_ip = #{loginIp}
+        where email= #{email} and deleted=0;
+    </update>
+
+    <update id="updateTimeByEmail">
+        update user_info
+        set update_time = #{now}
+        where email= #{email} and deleted=0;
+    </update>
+
+    <select id="getUserByUsername" resultType="com.server.dto.UserAll">
+        select * from user
+        where username= #{username};
+    </select>
+
+    <select id="getUserByEmail" resultType="com.server.dto.UserAll">
+        select *
+        from user
+        where email= #{email};
+    </select>
+
+    <select id="getByEmail" resultType="com.server.mapper.po.User">
+        select *
+        from user
+        where email=#{email};
+    </select>
 
 </mapper>

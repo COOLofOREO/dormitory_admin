@@ -1,27 +1,21 @@
-package com.server.entity;
+package com.server.mapper.po;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 public class User implements Serializable {
-
+    @TableId
     private String userId;
     private String username;
-    private String name;
     private String role;
     private String email;
-    private String image;
     private String status;
+    private String image;
+    private String name;
     private String sex;
-    private String age;
+    private int age;
     private String phone;
-
-    private String password;
-    private int deleted;
-    private Date createTime;
-    private Date updateTime;
-    private String loginIp;
 }

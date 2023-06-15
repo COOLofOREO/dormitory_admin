@@ -3,7 +3,7 @@ package com.server.entity;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 public class Authority implements Serializable {
@@ -12,9 +12,9 @@ public class Authority implements Serializable {
      */
     private String authority;
     private String createBy;
-    private Date createTime;
+    private LocalDateTime createTime;
     private String updateBy;
-    private Date updateTime;
+    private LocalDateTime updateTime;
     /**
      * 发布打卡
      */

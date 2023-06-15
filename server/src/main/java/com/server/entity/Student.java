@@ -1,11 +1,12 @@
 package com.server.entity;
 
+import com.server.dto.UserAll;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class Student extends User implements Serializable {
+public class Student extends UserAll implements Serializable {
     private String studentId;
     private String college;
     private String grade;
