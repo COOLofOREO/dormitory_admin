@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class UserAll extends User{
 
     private String password;
-    private int deleted;
+    private Integer deleted;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private String loginIp;

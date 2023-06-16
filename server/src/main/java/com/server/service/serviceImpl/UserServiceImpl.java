@@ -2,6 +2,7 @@ package com.server.service.serviceImpl;
 
 import com.server.controller.vo.UserLogin;
 import com.server.dto.UserAll;
+import com.server.mapper.UserInfoMapper;
 import com.server.mapper.UserMapper;
 import com.server.mapper.po.User;
 import com.server.mapper.po.UserInfo;
@@ -21,6 +22,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -28,21 +32,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean addUser(UserAll userAll) {
-        return userMapper.addUser(userAll);
+        return userInfoMapper.addUser(userAll);
     }
 
     @Transactional
     @Override
     public boolean register(UserAll userAll) {
         //检查昵称重复
-        List<UserAll> list=userMapper.getUserByUsername(userAll.getUsername());
+        List<UserAll> list= userInfoMapper.getUserByUsername(userAll.getUsername());
         if(list!=null&&list.size()>0) return false;
         String pwd= userAll.getPassword();
         //MD5加密 生成32位密码
         String hashedPwd = DigestUtils.md5DigestAsHex((pwd).getBytes());
         userAll.setUserId(StringsUtils.makeId(userAll.getUsername()));
         userAll.setStatus("正常");
-        userMapper.addUser(userAll);
+        userInfoMapper.addUser(userAll);
 
         UserInfo userInfo=new UserInfo();
         userInfo.setUserId(userAll.getUserId());
@@ -52,7 +56,7 @@ public class UserServiceImpl implements UserService {
         userInfo.setCreateTime(LocalDateTime.now());
         userInfo.setUpdateTime(LocalDateTime.now());
 
-        userMapper.insert(userInfo);
+        userInfoMapper.insert(userInfo);
 
         return true;
     }
@@ -60,14 +64,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public boolean loginByPwd(UserLogin userLogin,String loginIp){
-        User user = userMapper.getUserByEmail(userLogin.getEmail());
+        User user = userInfoMapper.getUserByEmail(userLogin.getEmail());
         if(user==null) return false;
         String pwd=StringsUtils.toMD5(userLogin.getPassword());
         //密码错误
         if(!pwd.equals(userLogin.getPassword())) return false;
         //更新登录时间和ip
-        userMapper.updateLoginIpByEmail(userLogin.getEmail(),loginIp);
-        userMapper.updateTimeByEmail(userLogin.getEmail(),LocalDateTime.now());
+        userInfoMapper.updateLoginIpByEmail(userLogin.getEmail(),loginIp);
+        userInfoMapper.updateTimeByEmail(userLogin.getEmail(),LocalDateTime.now());
         return true;
     }
 
@@ -83,10 +87,35 @@ public class UserServiceImpl implements UserService {
         if(bool){
             //验证码正确
             //更新登录时间和ip
-            userMapper.updateLoginIpByEmail(userLogin.getEmail(),loginIp);
-            userMapper.updateTimeByEmail(userLogin.getEmail(),LocalDateTime.now());
+            userInfoMapper.updateLoginIpByEmail(userLogin.getEmail(),loginIp);
+            userInfoMapper.updateTimeByEmail(userLogin.getEmail(),LocalDateTime.now());
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean delete(UserInfo userInfo) {
+        UserInfo user= userInfoMapper.selectById(userInfo.getUserId());
+        if(user==null) return false;
+        if(!userInfo.getEmail().equals(user.getEmail())) return false;
+        String pwd=StringsUtils.toMD5(userInfo.getPassword());
+        if(!pwd.equals(user.getPassword())) return false;
+        return true;
+    }
+
+    @Transactional
+    @Override
+    public boolean update(UserAll userAll) {
+        User user= userInfoMapper.getByUserId(userAll.getUserId());
+        if(userAll.getPassword()!=null||userAll.getPassword()!=""){
+            //更新登录密码
+            UserInfo userInfo=new UserInfo();
+            userInfo.setUserId(userAll.getUserId());
+            userInfo.setPassword(userAll.getPassword());
+            userInfoMapper.updateById(userInfo);
+        }
+        userMapper.updateById(userAll);
         return false;
     }
 }
